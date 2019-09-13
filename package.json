@@ -4,7 +4,8 @@
 	"description": "Creates eslint and prettier config files and installs the required dependencies to allow them to play well together.",
 	"bin": "cli.js",
 	"files": [
-		"cli.js"
+		"cli.js",
+		"config.js"
 	],
 	"keywords": [],
 	"author": "Simon Legg <leggsimon@gmail.com>",
