@@ -59,6 +59,20 @@ inquirer
 				},
 			],
 		},
+		{
+			type: 'list',
+			name: 'filenames.prettier',
+			message: 'What type of prettier config file would you like?',
+			choices: [
+				'.prettierrc.js',
+				'.prettierrc.config.js',
+				'.prettierrc.json',
+				{
+					name: '.prettierrc (JSON syntax)',
+					value: '.prettierrc',
+				},
+			],
+		},
 	])
 	.then(({ prettierOverrides, filenames }) => {
 		const prettierConfig = {
@@ -80,9 +94,9 @@ inquirer
 		);
 
 		const writePrettierConfig = writeFile(
-			'.prettierrc',
+			filenames.prettier,
 			prettier.format(JSON.stringify(prettierConfig), {
-				filepath: '.prettierrc',
+				filepath: filenames.prettier,
 				...prettierConfig,
 				printWidth: 20, // force it not to be written on a single line
 			}),
