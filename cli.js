@@ -2,6 +2,8 @@
 
 const fs = require('fs').promises;
 
+const prettier = require('prettier');
+
 const defaultEslintOptions = {
 	parserOptions: {
 		ecmaVersion: 2017,
@@ -26,12 +28,19 @@ const defaultPrettierOptions = {
 
 const writeEslintConfig = fs.writeFile(
 	'.eslintrc.js',
-	`module.exports = ${JSON.stringify(defaultEslintOptions, null, 2)}`,
+	prettier.format(`module.exports = ${JSON.stringify(defaultEslintOptions)}`, {
+		filepath: '.eslintrc.js',
+		...defaultPrettierOptions,
+	}),
 );
 
 const writePrettierConfig = fs.writeFile(
 	'.prettierrc',
-	JSON.stringify(defaultPrettierOptions, null, 2),
+	prettier.format(JSON.stringify(defaultPrettierOptions), {
+		filepath: '.prettierrc',
+		...defaultPrettierOptions,
+		printWidth: 20,
+	}),
 );
 
 Promise.all([writeEslintConfig, writePrettierConfig]).then(() => {
