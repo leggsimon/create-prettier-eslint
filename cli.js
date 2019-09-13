@@ -40,6 +40,12 @@ inquirer
 				{ name: 'Spaces', value: false },
 			],
 		},
+		{
+			type: 'list',
+			name: 'prettier.semi',
+			message: 'Print semicolons at the ends of statements?',
+			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+		},
 	])
 	.then(answers => {
 		const prettierConfig = {
