@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const { spawn } = require('child_process');
 const { promisify } = require('util');
 const inquirer = require('inquirer');
 const prettier = require('prettier');
@@ -105,5 +106,28 @@ inquirer
 		return Promise.all([writeEslintConfig, writePrettierConfig]);
 	})
 	.then(() => {
+		console.log('Installing dependencies…');
+
+		const install = spawn(
+			'npm',
+			[
+				'install',
+				'--save-dev',
+				'eslint',
+				'prettier',
+				'eslint-config-prettier',
+				'eslint-plugin-prettier',
+			],
+			{ stdio: 'inherit' },
+		);
+		install.on('close', code => {
+			process.exitCode = code;
+
+			if (!code) {
+				console.log('Something went wrong installing the dependencies');
+				console.log(`child process exited with code ${code}`);
+			} else {
 		console.log('\x1b[32m', 'Done!', '\x1b[0m');
+			}
+		});
 	});
