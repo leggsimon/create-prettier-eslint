@@ -1,0 +1,15 @@
+{
+	"name": "create-prettier-eslint",
+	"version": "0.0.0",
+	"description": "Creates eslint and prettier config files and installs the required dependencies to allow them to play well together.",
+	"bin": "cli.js",
+	"files": [
+		"cli.js"
+	],
+	"keywords": [],
+	"author": "Simon Legg <leggsimon@gmail.com>",
+	"license": "ISC",
+	"devDependencies": {
+		"np": "^5.1.0"
+	}
+}
