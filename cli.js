@@ -5,6 +5,7 @@ const { spawn } = require('child_process');
 const { promisify } = require('util');
 const inquirer = require('inquirer');
 const prettier = require('prettier');
+const ora = require('ora');
 
 const writeFile = promisify(fs.writeFile);
 
@@ -30,13 +31,28 @@ const defaultPrettierOptions = {
 	useTabs: true,
 };
 
+const format = (filename, contents, prettierConfig) => {
+	const isJS = filename.endsWith('.js');
+	return prettier.format(
+		`${isJS ? 'module.exports = ' : ''}${JSON.stringify(contents)}`,
+		{
+			filepath: filename,
+			...prettierConfig,
+			fileWidth: 60, // force it not to be written on a single line
+		},
+	);
+};
+
 inquirer
 	.prompt([
 		{
 			type: 'list',
 			name: 'prettierOverrides.useTabs',
 			message: 'Do you use tabs or spaces?',
-			choices: [{ name: 'Tabs', value: true }, { name: 'Spaces', value: false }],
+			choices: [
+				{ name: 'Tabs', value: true },
+				{ name: 'Spaces', value: false },
+			],
 		},
 		{
 			type: 'list',
@@ -78,31 +94,17 @@ inquirer
 			...prettierOverrides,
 		};
 
-		const writeEslintConfig = writeFile(
-			filenames.eslint,
-			prettier.format(
-				`${filenames.eslint.endsWith('.js') ? 'module.exports = ' : ''}${JSON.stringify(
-					defaultEslintOptions,
-				)}`,
-				{
-					filepath: filenames.eslint,
-					...prettierConfig,
-				},
-			),
+		const createFile = (filename, contents) =>
+			writeFile(filename, format(filename, contents, prettierConfig));
+
+		const writeEslintConfig = ora.promise(
+			createFile(filenames.eslint, defaultEslintOptions),
+			{ text: 'Creating eslint file' },
 		);
 
-		const writePrettierConfig = writeFile(
-			filenames.prettier,
-			prettier.format(
-				`${filenames.prettier.endsWith('.js') ? 'module.exports = ' : ''}${JSON.stringify(
-					prettierConfig,
-				)}`,
-				{
-					filepath: filenames.prettier,
-					...prettierConfig,
-					printWidth: 40, // force it not to be written on a single line
-				},
-			),
+		const writePrettierConfig = ora.promise(
+			createFile(filenames.prettier, prettierConfig),
+			{ text: 'Creating prettier file' },
 		);
 
 		return Promise.all([writeEslintConfig, writePrettierConfig]);
