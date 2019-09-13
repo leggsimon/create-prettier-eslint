@@ -36,10 +36,7 @@ inquirer
 			type: 'list',
 			name: 'prettierOverrides.useTabs',
 			message: 'Do you use tabs or spaces?',
-			choices: [
-				{ name: 'Tabs', value: true },
-				{ name: 'Spaces', value: false },
-			],
+			choices: [{ name: 'Tabs', value: true }, { name: 'Spaces', value: false }],
 		},
 		{
 			type: 'list',
@@ -84,9 +81,9 @@ inquirer
 		const writeEslintConfig = writeFile(
 			filenames.eslint,
 			prettier.format(
-				`${
-					filenames.eslint === '.eslintrc.js' ? 'module.exports = ' : ''
-				}${JSON.stringify(defaultEslintOptions)}`,
+				`${filenames.eslint.endsWith('.js') ? 'module.exports = ' : ''}${JSON.stringify(
+					defaultEslintOptions,
+				)}`,
 				{
 					filepath: filenames.eslint,
 					...prettierConfig,
@@ -96,11 +93,16 @@ inquirer
 
 		const writePrettierConfig = writeFile(
 			filenames.prettier,
-			prettier.format(JSON.stringify(prettierConfig), {
-				filepath: filenames.prettier,
-				...prettierConfig,
-				printWidth: 20, // force it not to be written on a single line
-			}),
+			prettier.format(
+				`${filenames.prettier.endsWith('.js') ? 'module.exports = ' : ''}${JSON.stringify(
+					prettierConfig,
+				)}`,
+				{
+					filepath: filenames.prettier,
+					...prettierConfig,
+					printWidth: 40, // force it not to be written on a single line
+				},
+			),
 		);
 
 		return Promise.all([writeEslintConfig, writePrettierConfig]);
@@ -127,7 +129,7 @@ inquirer
 				console.log('Something went wrong installing the dependencies');
 				console.log(`child process exited with code ${code}`);
 			} else {
-		console.log('\x1b[32m', 'Done!', '\x1b[0m');
+				console.log('\x1b[32m', 'Done!', '\x1b[0m');
 			}
 		});
 	});
