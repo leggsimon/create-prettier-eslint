@@ -33,7 +33,7 @@ inquirer
 	.prompt([
 		{
 			type: 'list',
-			name: 'prettier.useTabs',
+			name: 'prettierOverrides.useTabs',
 			message: 'Do you use tabs or spaces?',
 			choices: [
 				{ name: 'Tabs', value: true },
@@ -42,22 +42,38 @@ inquirer
 		},
 		{
 			type: 'list',
-			name: 'prettier.semi',
+			name: 'prettierOverrides.semi',
 			message: 'Print semicolons at the ends of statements?',
 			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
 		},
+		{
+			type: 'list',
+			name: 'filenames.eslint',
+			message: 'What type of eslint config file would you like?',
+			choices: [
+				'.eslintrc.js',
+				'.eslintrc.json',
+				{
+					name: '.eslintrc (JSON syntax)',
+					value: '.eslintrc',
+				},
+			],
+		},
 	])
-	.then(answers => {
+	.then(({ prettierOverrides, filenames }) => {
 		const prettierConfig = {
 			...defaultPrettierOptions,
-			...answers.prettier,
+			...prettierOverrides,
 		};
+
 		const writeEslintConfig = writeFile(
-			'.eslintrc.js',
+			filenames.eslint,
 			prettier.format(
-				`module.exports = ${JSON.stringify(defaultEslintOptions)}`,
+				`${
+					filenames.eslint === '.eslintrc.js' ? 'module.exports = ' : ''
+				}${JSON.stringify(defaultEslintOptions)}`,
 				{
-					filepath: '.eslintrc.js',
+					filepath: filenames.eslint,
 					...prettierConfig,
 				},
 			),
@@ -68,7 +84,7 @@ inquirer
 			prettier.format(JSON.stringify(prettierConfig), {
 				filepath: '.prettierrc',
 				...prettierConfig,
-				printWidth: 20,
+				printWidth: 20, // force it not to be written on a single line
 			}),
 		);
 
