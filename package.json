@@ -13,6 +13,7 @@
 		"np": "^5.1.0"
 	},
 	"dependencies": {
+		"inquirer": "^7.0.0",
 		"prettier": "^1.18.2"
 	}
 }
