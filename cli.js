@@ -6,7 +6,6 @@ const { homedir } = require('os');
 const { join } = require('path');
 const inquirer = require('inquirer');
 const prettier = require('prettier');
-const ora = require('ora');
 const { defaults, questions } = require('./config');
 const { installDev } = require('./install-dependencies');
 const writeFile = promisify(fs.writeFile);
@@ -38,16 +37,19 @@ readConfigOrQuestion()
 			...prettierOverrides,
 		};
 
-		const createFile = (filename, contents) =>
-			writeFile(filename, format(filename, contents, prettierConfig));
+		const createFile = async (filename, contents) => {
+			try {
+				await writeFile(filename, format(filename, contents, prettierConfig));
+				console.log('\x1b[32m', '✔', '\x1b[0m', `Created ${filename}`);
+			} catch (error) {
+				console.log('\x1b[31m', '✘', '\x1b[0m', `Error creating ${filename}\n`);
+				console.log(error);
+			}
+		};
 
-		const writeEslintConfig = ora.promise(createFile(filenames.eslint, defaults.eslint), {
-			text: 'Creating eslint file',
-		});
+		const writeEslintConfig = createFile(filenames.eslint, defaults.eslint);
 
-		const writePrettierConfig = ora.promise(createFile(filenames.prettier, prettierConfig), {
-			text: 'Creating prettier file',
-		});
+		const writePrettierConfig = createFile(filenames.prettier, prettierConfig);
 
 		const promises = [writeEslintConfig, writePrettierConfig];
 
