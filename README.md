@@ -2,6 +2,8 @@
 
 Creates eslint and prettier config files and installs the required dependencies to allow them to play well together.
 
+![GIF of usage](./images/example-usage.gif)
+
 ## Usage
 
 ```sh
