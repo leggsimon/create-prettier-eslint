@@ -8,6 +8,12 @@
 		"config.js",
 		"install-dependencies.js"
 	],
+	"repository": {
+		"url": "https://github.com/leggsimon/create-prettier-eslint"
+	},
+	"bugs": {
+		"url": "https://github.com/leggsimon/create-prettier-eslint/issues"
+	},
 	"keywords": [],
 	"author": "Simon Legg <leggsimon@gmail.com>",
 	"license": "ISC",
