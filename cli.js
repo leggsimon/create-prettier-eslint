@@ -2,12 +2,15 @@
 
 const fs = require('fs');
 const { promisify } = require('util');
+const { homedir } = require('os');
+const { join } = require('path');
 const inquirer = require('inquirer');
 const prettier = require('prettier');
 const ora = require('ora');
 const { defaults, questions } = require('./config');
 const { installDev } = require('./install-dependencies');
 const writeFile = promisify(fs.writeFile);
+const configFileName = join(homedir(), '.prettiereslint.config.json');
 
 const format = (filename, contents, prettierConfig) => {
 	const isJS = filename.endsWith('.js');
@@ -18,9 +21,18 @@ const format = (filename, contents, prettierConfig) => {
 	});
 };
 
-inquirer
-	.prompt(questions)
-	.then(({ prettierOverrides, filenames }) => {
+async function readConfigOrQuestion() {
+	if (fs.existsSync(configFileName)) {
+		console.log('Config file found. Using that');
+		const config = require(configFileName);
+		return config;
+	} else {
+		return inquirer.prompt(questions);
+	}
+}
+
+readConfigOrQuestion()
+	.then(({ prettierOverrides, filenames, saveGlobalConfig }) => {
 		const prettierConfig = {
 			...defaults.prettier,
 			...prettierOverrides,
@@ -37,7 +49,15 @@ inquirer
 			text: 'Creating prettier file',
 		});
 
-		return Promise.all([writeEslintConfig, writePrettierConfig]);
+		const promises = [writeEslintConfig, writePrettierConfig];
+
+		if (saveGlobalConfig) {
+			promises.push(
+				createFile(configFileName, { prettierOverrides: prettierConfig, filenames }),
+			);
+		}
+
+		return Promise.all(promises);
 	})
 	.then(() => {
 		console.log('Installing dependencies…');

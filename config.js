@@ -64,5 +64,11 @@ module.exports = {
 				},
 			],
 		},
+		{
+			type: 'list',
+			name: 'saveGlobalConfig',
+			message: 'Would you like to save these globally so I won’t ask again?',
+			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+		},
 	],
 };
