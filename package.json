@@ -21,6 +21,7 @@
 		"np": "^5.1.0"
 	},
 	"dependencies": {
+		"deepmerge": "^4.0.0",
 		"inquirer": "^7.0.0",
 		"prettier": "^1.18.2"
 	}

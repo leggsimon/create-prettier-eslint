@@ -8,9 +8,6 @@ module.exports = {
 			parserOptions: {
 				ecmaVersion: 2017,
 				sourceType: 'module',
-				ecmaFeatures: {
-					jsx: true,
-				},
 			},
 			extends: ['eslint:recommended', 'prettier'],
 			plugins: ['prettier'],
@@ -67,6 +64,12 @@ module.exports = {
 					value: '.prettierrc',
 				},
 			],
+		},
+		{
+			type: 'list',
+			name: 'useReact',
+			message: 'Are you using React/JSX?',
+			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
 		},
 		{
 			type: 'list',

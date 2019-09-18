@@ -6,6 +6,7 @@ const { homedir } = require('os');
 const { join } = require('path');
 const inquirer = require('inquirer');
 const prettier = require('prettier');
+const merge = require('deepmerge');
 const { defaults, questions } = require('./config');
 const { installDev } = require('./install-dependencies');
 const writeFile = promisify(fs.writeFile);
@@ -48,12 +49,27 @@ const createFile = async (filename, contents, prettierConfig) => {
 		prettierOverrides,
 		filenames,
 		saveGlobalConfig,
+		useReact,
 	} = await readConfigOrQuestion();
 
 	const prettierConfig = {
 		...defaults.prettier,
 		...prettierOverrides,
 	};
+
+	const eslintConfig = merge(
+		defaults.eslint,
+		useReact
+			? {
+					parserOptions: {
+						ecmaFeatures: {
+							jsx: true,
+						},
+					},
+					extends: ['react'],
+			  }
+			: {},
+	);
 
 	const writeEslintConfig = createFile(
 		filenames.eslint,
@@ -87,6 +103,7 @@ const createFile = async (filename, contents, prettierConfig) => {
 		'prettier',
 		'eslint-config-prettier',
 		'eslint-plugin-prettier',
+		...(useReact ? ['eslint-plugin-react'] : []),
 	];
 
 	return await installDev(requiredDependencies);
