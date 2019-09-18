@@ -1,6 +1,10 @@
 module.exports = {
 	defaults: {
 		eslint: {
+			env: {
+				browser: true,
+				node: true,
+			},
 			parserOptions: {
 				ecmaVersion: 2017,
 				sourceType: 'module',
