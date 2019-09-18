@@ -46,19 +46,28 @@ const createFile = async (filename, contents, prettierConfig) => {
 
 (async () => {
 	const {
-		prettierOverrides,
+		prettier,
 		filenames,
 		saveGlobalConfig,
 		useReact,
+		eslint,
 	} = await readConfigOrQuestion();
 
 	const prettierConfig = {
 		...defaults.prettier,
-		...prettierOverrides,
+		...prettier,
 	};
 
-	const eslintConfig = merge(
+	const eslintConfig = merge.all([
 		defaults.eslint,
+		{
+			env: {
+				browser: eslint.env.includes('browser'),
+				node: eslint.env.includes('node'),
+				mocha: eslint.env.includes('mocha'),
+				jest: eslint.env.includes('jest'),
+			},
+		},
 		useReact
 			? {
 					parserOptions: {
@@ -69,11 +78,11 @@ const createFile = async (filename, contents, prettierConfig) => {
 					extends: ['react'],
 			  }
 			: {},
-	);
+	]);
 
 	const writeEslintConfig = createFile(
 		filenames.eslint,
-		defaults.eslint,
+		eslintConfig,
 		prettierConfig,
 	);
 

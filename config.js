@@ -1,10 +1,6 @@
 module.exports = {
 	defaults: {
 		eslint: {
-			env: {
-				browser: true,
-				node: true,
-			},
 			parserOptions: {
 				ecmaVersion: 2017,
 				sourceType: 'module',
@@ -25,7 +21,7 @@ module.exports = {
 	questions: [
 		{
 			type: 'list',
-			name: 'prettierOverrides.useTabs',
+			name: 'prettier.useTabs',
 			message: 'Do you use tabs or spaces?',
 			choices: [
 				{ name: 'Tabs', value: true },
@@ -34,8 +30,26 @@ module.exports = {
 		},
 		{
 			type: 'list',
-			name: 'prettierOverrides.semi',
+			name: 'prettier.semi',
 			message: 'Print semicolons at the ends of statements?',
+			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+		},
+		{
+			type: 'checkbox',
+			name: 'eslint.env',
+			message:
+				'What environments are you working in? These predefine some global variables.\n',
+			choices: [
+				{ name: 'browser', checked: true },
+				{ name: 'node', checked: true },
+				{ name: 'mocha', checked: false },
+				{ name: 'jest', checked: false },
+			],
+		},
+		{
+			type: 'list',
+			name: 'useReact',
+			message: 'Are you using React/JSX?',
 			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
 		},
 		{
@@ -64,12 +78,6 @@ module.exports = {
 					value: '.prettierrc',
 				},
 			],
-		},
-		{
-			type: 'list',
-			name: 'useReact',
-			message: 'Are you using React/JSX?',
-			choices: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
 		},
 		{
 			type: 'list',
