@@ -75,8 +75,8 @@ const createFile = async (filename, contents, prettierConfig) => {
 							jsx: true,
 						},
 					},
-					plugins: ['plugin:react/recommended'],
-					extends: ['react'],
+					extends: ['plugin:react/recommended'],
+					plugins: ['react'],
 			  }
 			: {},
 	]);
