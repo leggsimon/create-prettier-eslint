@@ -12,7 +12,7 @@ module.exports = {
 					jsx: true,
 				},
 			},
-			extends: ['prettier'],
+			extends: ['eslint:recommended', 'prettier'],
 			plugins: ['prettier'],
 			rules: {
 				'prettier/prettier': ['error'],
